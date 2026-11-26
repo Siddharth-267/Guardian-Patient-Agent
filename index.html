@@ -3,123 +3,224 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guardian Patient Agent | Chronic Disease Monitoring</title>
+  <title>Guardian Patient Agent | Preliminary Health Monitoring</title>
   <style>
     :root {
-      --primary: #0d9488;
-      --primary-dark: #0f766e;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #475569;
-      --border: #e2e8f0;
-      --warn-bg: #fef3c7;
-      --warn-text: #92400e;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --text: #102a43;
+      --muted: #486581;
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+      --border: #d9e2ec;
+      --warn-bg: #fffbeb;
+      --warn-border: #f59e0b;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); line-height: 1.6; }
-    header { background: var(--card); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-    .brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.2rem; color: var(--primary-dark); }
-    .badge { background: #ccfbf1; color: var(--primary-dark); font-size: 0.75rem; padding: 0.25rem 0.65rem; border-radius: 999px; font-weight: 600; }
-    .container { max-width: 960px; margin: 2.5rem auto; padding: 0 1.5rem; }
-    .hero { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .hero h1 { font-size: 1.75rem; margin-bottom: 0.75rem; color: var(--text); }
-    .hero p { color: var(--muted); margin-bottom: 1.5rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .module-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
-    .module-card h3 { font-size: 1rem; color: var(--primary-dark); margin-bottom: 0.4rem; }
-    .module-card p { font-size: 0.9rem; color: var(--muted); }
-    .prompts { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
-    .prompts h3 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text); }
-    .prompt-chip { display: inline-block; background: #f1f5f9; border: 1px solid var(--border); padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.85rem; margin: 0.25rem; cursor: pointer; transition: background 0.15s; }
-    .prompt-chip:hover { background: #e2e8f0; }
-    .disclaimer { background: var(--warn-bg); color: var(--warn-text); border: 1px solid #fde68a; padding: 1rem 1.25rem; border-radius: 10px; font-size: 0.85rem; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem 6rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 16px rgba(16, 42, 67, 0.05);
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e6fffa;
+      color: var(--accent-dark);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-dark);
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .prompts-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .prompts-box h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .prompt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .prompt-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.92rem;
+    }
+
+    button.copy-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button.copy-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .disclaimer {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn-border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: #78350f;
+    }
   </style>
 </head>
 <body>
-
-  <header>
-    <div class="brand">
-      <span>🛡️ Guardian Patient Agent</span>
-    </div>
-    <span class="badge">Salesforce Agentforce + Data Cloud</span>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <h1>Chronic Disease Monitoring &amp; Risk Assessment</h1>
-      <p>
-        Interact with our AI healthcare assistant in the bottom-right widget to log vitals (blood glucose, blood pressure, weight), evaluate preliminary diabetes or cardiovascular risk, and trigger automated clinical follow-up workflows.
+  <div class="container">
+    <header>
+      <span class="badge">Salesforce Agentforce • Data Cloud • MIAW</span>
+      <h1>Guardian Patient Agent</h1>
+      <p class="subtitle">
+        Preliminary health risk monitoring assistant for diabetes and cardiovascular indicators.
+        Use the chat widget in the bottom-right corner to start a session.
       </p>
+    </header>
 
-      <div class="grid">
-        <div class="module-card">
-          <h3>🩸 Diabetes Risk Subagent</h3>
-          <p>Evaluates blood glucose, weight, and symptoms against configured clinical rules and knowledge-grounded guidelines.</p>
-        </div>
-        <div class="module-card">
-          <h3>❤️ Heart Risk Subagent</h3>
-          <p>Assesses systolic/diastolic blood pressure and cardiovascular indicators with automated high-risk case escalation.</p>
-        </div>
-        <div class="module-card">
-          <h3>⚡ Automated Case Escalation</h3>
-          <p>Deterministic Salesforce Flows evaluate thresholds and automatically generate Clinical Cases for care-team review.</p>
-        </div>
+    <section class="grid">
+      <div class="card">
+        <h2>Diabetes Risk Check</h2>
+        <p>Explore preliminary questions and lifestyle tracking points around fasting glucose, HbA1c, and common symptoms.</p>
       </div>
-
-      <div class="prompts">
-        <h3>Sample Prompts to Copy &amp; Test in the Chat Widget:</h3>
-        <div class="prompt-chip" onclick="copyText(this)">"My Patient ID is P-104. My fasting blood glucose is 185 mg/dL, weight is 84 kg, and I feel unusually fatigued."</div>
-        <div class="prompt-chip" onclick="copyText(this)">"Check my heart risk for Patient ID P-209. Blood pressure is 152/96 mmHg and weight is 90 kg."</div>
-        <div class="prompt-chip" onclick="copyText(this)">"What dietary precautions should I take for elevated blood sugar?"</div>
+      <div class="card">
+        <h2>Cardiovascular Awareness</h2>
+        <p>Review blood pressure readings, heart-health habits, and warning signs that warrant prompt medical attention.</p>
       </div>
-
-      <div class="disclaimer">
-        <strong>Medical Disclaimer:</strong> Guardian Patient Agent is intended strictly for preliminary monitoring and decision support. It does not replace professional medical evaluation, diagnose conditions, or prescribe treatments. If you are experiencing severe symptoms (such as chest pain or shortness of breath), seek emergency medical care immediately.
+      <div class="card">
+        <h2>Grounded Guidance</h2>
+        <p>Powered by Agentforce, Prompt Builder, Data Library, and Omni-Channel routing with fallback queue support.</p>
       </div>
     </section>
-  </main>
+
+    <section class="prompts-box">
+      <h3>Sample Prompts to Copy &amp; Test in the Chat Widget:</h3>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <span>"I have a fasting blood sugar of 138 mg/dL and occasional fatigue—what should I keep in mind?"</span>
+          <button class="copy-btn" type="button" onclick="copyPrompt(this)">Copy</button>
+        </div>
+        <div class="prompt-item">
+          <span>"What blood pressure readings and daily habits help monitor early cardiovascular risk?"</span>
+          <button class="copy-btn" type="button" onclick="copyPrompt(this)">Copy</button>
+        </div>
+        <div class="prompt-item">
+          <span>"Can you summarize preliminary diabetes risk factors I should discuss with a doctor?"</span>
+          <button class="copy-btn" type="button" onclick="copyPrompt(this)">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> Guardian Patient Agent provides preliminary educational information only and is not a substitute for professional medical advice, diagnosis, or treatment.
+    </div>
+  </div>
 
   <script>
-    function copyText(el) {
-      const text = el.innerText.replace(/^"|"$/g, '');
-      navigator.clipboard.writeText(text);
-      const original = el.innerText;
-      el.innerText = "✓ Copied to clipboard! Paste in chat widget →";
-      setTimeout(() => { el.innerText = original; }, 1800);
+    function copyPrompt(btn) {
+      const text = btn.previousElementSibling.textContent.replace(/^"|"$/g, '');
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 1500);
+      });
     }
   </script>
-
-<script type='text/javascript'>
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
-
-			embeddedservice_bootstrap.init(
-				'00DgK00000Wxn87',
-				'Guardian_Patient_Web_Widget',
-				'https://orgfarm-5cee50fe32-dev-ed.develop.my.site.com/ESWGuardianPatie1795718066040',
-				{
-					scrt2URL: 'https://orgfarm-5cee50fe32-dev-ed.develop.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://orgfarm-5cee50fe32-dev-ed.develop.my.site.com/ESWGuardianPatie1795718066040/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
   <script type='text/javascript'>
     function initEmbeddedMessaging() {
       try {
-        embeddedservice_bootstrap.settings.language = 'en_US';
+        embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+
         embeddedservice_bootstrap.init(
-          'YOUR_ORG_ID',
-          'YOUR_DEPLOYMENT_DEVELOPER_NAME',
-          'https://YOUR_DOMAIN.my.site.com/ESWGuardianDeployment',
+          '00DgK00000Wxn87',
+          'Guardian_Patient_Web_Widget',
+          'https://orgfarm-5cee50fe32-dev-ed.develop.my.site.com/ESWGuardianPatie1795718066040',
           {
-            scrt2URL: 'https://YOUR_DOMAIN.my.salesforce-scrt.com'
+            scrt2URL: 'https://orgfarm-5cee50fe32-dev-ed.develop.my.salesforce-scrt.com'
           }
         );
       } catch (err) {
@@ -127,7 +228,6 @@
       }
     };
   </script>
-  <script type='text/javascript' src='https://YOUR_DOMAIN.my.site.com/ESWGuardianDeployment/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
-
+  <script type='text/javascript' src='https://orgfarm-5cee50fe32-dev-ed.develop.my.site.com/ESWGuardianPatie1795718066040/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 </body>
 </html>
