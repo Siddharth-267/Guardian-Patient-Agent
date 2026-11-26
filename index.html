@@ -17,11 +17,7 @@
       --warn-border: #f59e0b;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -31,10 +27,7 @@
       padding: 2rem 1rem 6rem;
     }
 
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-    }
+    .container { max-width: 860px; margin: 0 auto; }
 
     header {
       background: var(--surface);
@@ -56,14 +49,36 @@
       margin-bottom: 0.75rem;
     }
 
-    h1 {
-      font-size: 1.9rem;
-      margin-bottom: 0.5rem;
+    h1 { font-size: 1.9rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--muted); font-size: 1rem; margin-bottom: 1.25rem; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.85rem;
     }
 
-    .subtitle {
+    .chat-launch-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .chat-launch-btn:hover { background: var(--accent-dark); }
+
+    .status-pill {
+      font-size: 0.85rem;
       color: var(--muted);
-      font-size: 1rem;
+      background: #f0f4f8;
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
     }
 
     .grid {
@@ -80,16 +95,8 @@
       padding: 1.25rem;
     }
 
-    .card h2 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent-dark);
-    }
-
-    .card p {
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
+    .card h2 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent-dark); }
+    .card p { color: var(--muted); font-size: 0.95rem; }
 
     .prompts-box {
       background: var(--surface);
@@ -99,16 +106,8 @@
       margin-bottom: 1.5rem;
     }
 
-    .prompts-box h3 {
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
-    }
-
-    .prompt-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
+    .prompts-box h3 { margin-bottom: 0.75rem; font-size: 1.1rem; }
+    .prompt-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
     .prompt-item {
       display: flex;
@@ -134,9 +133,7 @@
       white-space: nowrap;
     }
 
-    button.copy-btn:hover {
-      background: var(--accent-dark);
-    }
+    button.copy-btn:hover { background: var(--accent-dark); }
 
     .disclaimer {
       background: var(--warn-bg);
@@ -155,8 +152,11 @@
       <h1>Guardian Patient Agent</h1>
       <p class="subtitle">
         Preliminary health risk monitoring assistant for diabetes and cardiovascular indicators.
-        Use the chat widget in the bottom-right corner to start a session.
       </p>
+      <div class="actions">
+        <button class="chat-launch-btn" type="button" onclick="openGuardianChat()">Open Guardian Chat</button>
+        <span id="widget-status" class="status-pill">Connecting to Salesforce MIAW...</span>
+      </div>
     </header>
 
     <section class="grid">
@@ -198,6 +198,11 @@
   </div>
 
   <script>
+    function setStatus(msg) {
+      const el = document.getElementById("widget-status");
+      if (el) el.textContent = msg;
+    }
+
     function copyPrompt(btn) {
       const promptSpan = btn.parentElement ? btn.parentElement.querySelector("span") : null;
       if (!promptSpan || !navigator.clipboard) return;
@@ -205,16 +210,26 @@
       navigator.clipboard.writeText(text).then(() => {
         const original = btn.textContent;
         btn.textContent = "Copied";
-        setTimeout(() => {
-          btn.textContent = original;
-        }, 1500);
+        setTimeout(() => { btn.textContent = original; }, 1500);
       });
     }
+
+    function openGuardianChat() {
+      if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
+        window.embeddedservice_bootstrap.utilAPI.launchChat();
+      } else {
+        alert("Chat widget is not ready yet. Check F12 Console for Salesforce CORS or Deployment errors.");
+      }
+    }
+
+    window.addEventListener("onEmbeddedMessagingReady", () => {
+      setStatus("Widget Ready (bottom-right icon active)");
+    });
 
     function initEmbeddedMessaging() {
       try {
         if (!window.embeddedservice_bootstrap) {
-          console.error("embeddedservice_bootstrap is not available.");
+          setStatus("Error: bootstrap object missing");
           return;
         }
         window.embeddedservice_bootstrap.settings.language = "en_US";
@@ -226,8 +241,10 @@
             scrt2URL: "https://orgfarm-5cee50fe32-dev-ed.develop.my.salesforce-scrt.com"
           }
         );
+        setStatus("Initialized — waiting for Salesforce widget...");
       } catch (err) {
         console.error("Error loading Embedded Messaging:", err);
+        setStatus("Init Error: " + err.message);
       }
     }
   </script>
@@ -235,7 +252,7 @@
     type="text/javascript"
     src="https://orgfarm-5cee50fe32-dev-ed.develop.my.site.com/ESWGuardianPatie1795718066040/assets/js/bootstrap.min.js"
     onload="initEmbeddedMessaging()"
-    onerror="console.error('Failed to load Salesforce bootstrap script.')"
+    onerror="setStatus('Blocked/404: Failed to load bootstrap.min.js')"
   ></script>
 </body>
 </html>
